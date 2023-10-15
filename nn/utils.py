@@ -49,8 +49,9 @@ def init_layer_norm(rng_key: random.PRNGKey, dimensions: int):
 
     weights = random.normal(weight_key, (dimensions, dimensions))
     biases = random.normal(bias_key, (dimensions, ))
+    gains = random.normal(bias_key, (dimensions, ))
 
-    parameters = {'layer-norm': (weights, biases)}
+    parameters = {'layer-norm': (weights, biases, gains)}
 
     return rng_key, parameters
 
@@ -88,7 +89,8 @@ def __forward_layer_norm(parameters: dict, input_data):
     # print(params["layer-norm"][0].shape,  params["layer-norm"][1].shape)
     print(f"Layer norm output shape {output.shape}")
 
-    output += parameters['layer-norm'][1]
+    output = jnp.multiply(parameters['layer-norm'][2], output) \
+        + parameters['layer-norm'][1]
     # print("Final layer norm output shape: ", layer_norm_output.shape)
 
     return output
