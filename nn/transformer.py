@@ -8,7 +8,7 @@ from jax import random
 import jax.numpy as jnp
 
 from nn.self_attention import init_self_attention
-# from nn.self_attention import attention_forward
+from nn.self_attention import attention_forward
 
 from nn.utils import init_dense
 from nn.utils import init_layer_norm
@@ -117,7 +117,7 @@ def init_transformer(rng_key: random.PRNGKey,
 def __transformer_encoder_forward(parameters: dict,
                                   input_data,
                                   mask,
-                                  _config: argparse.Namespace):
+                                  config: argparse.Namespace):
     """
     Transformer Encoder Forward Pass Helper
 
@@ -131,11 +131,9 @@ def __transformer_encoder_forward(parameters: dict,
 
     print(f"[Encoder] Layer data shape: {input_data.shape}")
 
-    attn_output = input_data
-    # TODO: Implement attention forward
-    # attn_output, _ = attention_forward(
-    #     parameters["attn"], config, cur_layer_input,
-    #     cur_layer_input, cur_layer_input, mask)
+    attn_output, _ = attention_forward(
+        parameters['attention'], input_data, input_data, input_data,
+        config, mask)
 
     add_1 = jnp.add(attn_output, input_data)
     print(f"[Encoder] Add layer 1: {add_1.shape}")
