@@ -131,11 +131,11 @@ def __transformer_encoder_forward(parameters: dict,
 
     print(f"[Encoder] Layer data shape: {input_data.shape}")
 
-    attn_output, _ = attention_forward(
+    attention_output, _ = attention_forward(
         parameters['attention'], input_data, input_data, input_data,
         config, mask)
 
-    add_1 = jnp.add(attn_output, input_data)
+    add_1 = jnp.add(attention_output, input_data)
     print(f"[Encoder] Add layer 1: {add_1.shape}")
 
     layer_norm_1 = BATCH_LAYER_NORM(parameters['norm-1'], add_1)
