@@ -79,15 +79,16 @@ def __forward_layer_norm(parameters: dict, input_data):
     :returns layer norm output:
     """
 
-    mean = jnp.mean(input_data, axis=-1, keepdims=True)
-    variance = jnp.var(input_data, axis=-1, keepdims=True)
-    output = (input_data - mean) / jnp.sqrt(variance - EPSILON)
+    output = jnp.dot(input_data, parameters['layer-norm'][0])
+
+    mean = jnp.mean(output, axis=-1, keepdims=True)
+    variance = jnp.var(output, axis=-1, keepdims=True)
+    output = (output - mean) / jnp.sqrt(variance - EPSILON)
 
     # print(params["layer-norm"][0].shape,  params["layer-norm"][1].shape)
-    print(f"Layer norm output shape {input_data.shape} - {output.shape}")
+    print(f"Layer norm output shape {output.shape}")
 
-    output = jnp.dot(output, parameters['layer-norm'][0]) \
-        + parameters['layer-norm'][1]
+    output += parameters['layer-norm'][1]
     # print("Final layer norm output shape: ", layer_norm_output.shape)
 
     return output
